@@ -3,7 +3,6 @@ import 'package:musicapp/colorvariables/colors.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
 import '../database/database.dart';
-import '../database/playlistDDB/playlistdb.dart';
 
 class PlaylistAddSong extends StatefulWidget {
   const PlaylistAddSong({super.key, required this.playlist});
@@ -91,10 +90,9 @@ class _PlaylistAddSongState extends State<PlaylistAddSong> {
                                   setState(
                                     () {
                                       songAddToPlaylist(
-                                        item.data![index],
+                                        item.data![index],context
                                       );
-                                      PlaylistDb.playlistNotifier
-                                          .notifyListeners();
+                                      
                                     },
                                   );
                                 },
@@ -107,7 +105,7 @@ class _PlaylistAddSongState extends State<PlaylistAddSong> {
                                 onPressed: () {
                                   setState(
                                     () {
-                                      songDeleteFromPlaylist(item.data![index]);
+                                      songDeleteFromPlaylist(item.data![index],context);
                                     },
                                   );
                                 },
@@ -129,7 +127,7 @@ class _PlaylistAddSongState extends State<PlaylistAddSong> {
     );
   }
 
-  void songAddToPlaylist(SongModel data) {
+  void songAddToPlaylist(SongModel data, context ) {
     widget.playlist.playlistadd(data.id);
     final addedToPlaylist = SnackBar(
       shape: RoundedRectangleBorder(
@@ -148,7 +146,7 @@ class _PlaylistAddSongState extends State<PlaylistAddSong> {
     ScaffoldMessenger.of(context).showSnackBar(addedToPlaylist);
   }
 
-  void songDeleteFromPlaylist(SongModel data) {
+  void songDeleteFromPlaylist(SongModel data,context) {
     widget.playlist.deleteData(data.id);
     final removePlaylist = SnackBar(
       shape: RoundedRectangleBorder(

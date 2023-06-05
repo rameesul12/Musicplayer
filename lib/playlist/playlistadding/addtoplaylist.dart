@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:musicapp/colorvariables/colors.dart';
 import 'package:musicapp/playlist/playlist.dart';
+import 'package:musicapp/provider/playlistProvider.dart';
 import 'package:on_audio_query/on_audio_query.dart';
+import 'package:provider/provider.dart';
 
 import '../../database/database.dart';
 
@@ -25,10 +27,10 @@ dialoguePlaylist(BuildContext context, SongModel songModel) {
           content: SizedBox(
             height: 150,
             width: double.maxFinite,
-            child: ValueListenableBuilder(
-                valueListenable:
-                    Hive.box<MusicWorld>('playlistDb').listenable(),
-                builder: (context, Box<MusicWorld> musicList, child) {
+            child: Consumer<PlaylistProvider>(
+                // valueListenable:
+                //     Hive.box<MusicWorld>('playlistDb').listenable(),
+                builder: (context, musicList, child) {
                   return Hive.box<MusicWorld>('playlistDb').isEmpty
                       ? const Center(
                           child: Text(
@@ -36,9 +38,9 @@ dialoguePlaylist(BuildContext context, SongModel songModel) {
                           style: TextStyle(fontSize: 18,color: Colors.black),
                         ))
                       : ListView.builder(
-                          itemCount: musicList.length,
+                          itemCount: musicList.playlistNotifier.length,
                           itemBuilder: (context, index) {
-                            final data = musicList.values.toList()[index];
+                            final data = musicList.playlistNotifier.toList()[index];
                             return Card(
                               color: Colors.white,
                               shape: RoundedRectangleBorder(

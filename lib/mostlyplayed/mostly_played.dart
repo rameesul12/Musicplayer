@@ -1,29 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:musicapp/colorvariables/colors.dart';
+import 'package:musicapp/provider/mostlyPlayed.dart';
 import 'package:musicapp/screens/listviewscreen.dart';
 import 'package:on_audio_query/on_audio_query.dart';
-import 'mostlydb.dart';
+import 'package:provider/provider.dart';
 
-class ScreenMostlyPlayed extends StatefulWidget {
-  const ScreenMostlyPlayed({super.key});
+// ignore: must_be_immutable
+class ScreenMostlyPlayed extends StatelessWidget {
+   ScreenMostlyPlayed({super.key});
 
-  @override
-  State<ScreenMostlyPlayed> createState() => _ScreenMostlyPlayedState();
-}
-
-class _ScreenMostlyPlayedState extends State<ScreenMostlyPlayed> {
   OnAudioQuery onAudioQuery = OnAudioQuery();
+
   List<SongModel> mostlyPlayedSongLIst = [];
+
   @override
-  void initState() {
-    // MostlyPlayed.getMostlyPlayed();
-    getMostPlayedSongs();
-    super.initState();
-  }
-   Future<void> getMostPlayedSongs() async {
-    await MostlyPlayed.getMostlyPlayed();
+  // void initState() {
+  //   // MostlyPlayed.getMostlyPlayed();
+  //   getMostPlayedSongs();
+  //   super.initState();
+  // }
+  //  Future<void> getMostPlayedSongs() async {
+  //   await MostlyPlayed.getMostlyPlayed();
   
-  }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -63,12 +62,12 @@ class _ScreenMostlyPlayedState extends State<ScreenMostlyPlayed> {
             // const SizedBox(height: 20,),
             Expanded(
               child: FutureBuilder(
-                future: MostlyPlayed.getMostlyPlayed(),
+                future:Provider.of<MostlyPlayedProvider>(context,listen: false).getMostlyPlayed(),
                 builder: (context, items) {
-                  return ValueListenableBuilder(
-                    valueListenable: MostlyPlayed.mostlyPlayedSongNotifier,
-                    builder: (context, List<SongModel> data, Widget? child) {
-                      if (data.isEmpty) {
+                  return Consumer<MostlyPlayedProvider>(
+                   // valueListenable: Provider.of<MostlyPlayedProvider>(context).mostlyPlayedSong,
+                    builder: (context,  mostlyData, Widget? child) {
+                      if (mostlyData.mostlyPlayedSong.isEmpty) {
                         return const Center(
                           child: Text(
                             'No songs ',
@@ -76,7 +75,7 @@ class _ScreenMostlyPlayedState extends State<ScreenMostlyPlayed> {
                           ),
                         );
                       } else {
-                        mostlyPlayedSongLIst = data.reversed.toSet().toList();
+                        mostlyPlayedSongLIst = mostlyData.mostlyPlayedSong.reversed.toSet().toList();
                         return FutureBuilder<List<SongModel>>(
                           future: onAudioQuery.querySongs(
                             sortType: null,
@@ -118,6 +117,4 @@ class _ScreenMostlyPlayedState extends State<ScreenMostlyPlayed> {
       ),
     );
   }
-
- 
 }

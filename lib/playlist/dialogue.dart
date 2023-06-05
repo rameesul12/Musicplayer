@@ -1,9 +1,12 @@
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../colorvariables/colors.dart';
 import '../database/database.dart';
-import '../database/playlistDDB/playlistdb.dart';
+import '../provider/playlistProvider.dart';
+class DialogueProvider extends ChangeNotifier{
 
-Future moredialogplaylist(
+ moredialogplaylist(
     context, index, musicList, formkey, playlistnamectrl, MusicWorld data) {
   return showDialog(
     context: context,
@@ -19,8 +22,8 @@ Future moredialogplaylist(
             playlistnamectrl.clear();
             editplaylist(index, context, formkey, playlistnamectrl, data);
           },
-          child: Row(
-            children: const [
+          child:const Row(
+            children:  [
               Icon(
                 Icons.edit,
                 color: Colors.grey,
@@ -44,8 +47,8 @@ Future moredialogplaylist(
             Navigator.of(context).pop();
             showdialog(context, musicList, index);
           },
-          child: Row(
-            children: const [
+          child:const Row(
+            children:  [
               Icon(
                 Icons.delete,
                 color: Colors.grey,
@@ -64,6 +67,7 @@ Future moredialogplaylist(
       ],
     ),
   );
+}
 }
 
 Future<dynamic> showdialog(context, musicList, index) {
@@ -203,7 +207,7 @@ Future editplaylist(
             ),
             SimpleDialogOption(
               onPressed: () {
-                updateplaylistname(index, formkey, playlistnamectrl);
+                updateplaylistname(index, formkey, playlistnamectrl,context);
                 Navigator.of(context).pop();
               },
               child: const Text(
@@ -221,14 +225,14 @@ Future editplaylist(
   );
 }
 
-void updateplaylistname(index, formkey, playlistnamectrl) {
+void updateplaylistname(index, formkey, playlistnamectrl,context) {
   if (formkey.currentState!.validate()) {
     final names = playlistnamectrl.text.trim();
     if (names.isEmpty) {
       return;
     } else {
       final playlistnam = MusicWorld(name: names, songId: []);
-      PlaylistDb.editPlaylist(index, playlistnam);
+      Provider.of<PlaylistProvider>(context,listen: false).editPlaylist(index, playlistnam,);
     }
   }
 }

@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:musicapp/colorvariables/colors.dart';
+import 'package:provider/provider.dart';
 import '../database/database.dart';
 import 'dialogue.dart';
 import 'playlist_List.dart';
@@ -51,9 +52,9 @@ var pics=[
         itemCount: widget.musicList.length,
         itemBuilder: (context, index) {
           final data = widget.musicList.values.toList()[index];
-          return ValueListenableBuilder(
-            valueListenable: Hive.box<MusicWorld>('playlistDb').listenable(),
-            builder: (BuildContext context, Box<MusicWorld> musicList,
+          return Consumer<DialogueProvider>(
+          //  valueListenable: Hive.box<MusicWorld>('playlistDb').listenable(),
+            builder: (BuildContext context,  musicList,
                 Widget? child) {
               return Padding(
                 padding: const EdgeInsets.all(4),
@@ -115,13 +116,14 @@ var pics=[
                              
                                   child: IconButton(
                                     onPressed: () {
-                                      moredialogplaylist(
-                                          context,
-                                          index,
-                                          musicList,
-                                          formkey,
-                                          playlistnamectrl,
-                                          data);
+                                     musicList.moredialogplaylist(context, index, musicList, formkey, playlistnamectrl, data);
+                                      // moredialogplaylist(
+                                      //     context,
+                                      //     index,
+                                      //     musicList,
+                                      //     formkey,
+                                      //     playlistnamectrl,
+                                      //     data);
                                     },
                                     icon: const Icon(
                                       Icons.more_vert,

@@ -20,7 +20,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
               padding: EdgeInsets.all(8.0),
               child: Text(
                 """     
-Privacy Policy for Music World player
+Privacy Policy for Beat Flow player
 
 Last updated: January 02, 2023
 

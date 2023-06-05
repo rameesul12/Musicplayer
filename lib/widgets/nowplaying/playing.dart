@@ -3,8 +3,9 @@ import 'package:just_audio/just_audio.dart';
 import 'package:musicapp/colorvariables/colors.dart';
 import 'package:musicapp/controller/get_all_song.dart';
 import 'package:musicapp/playlist/playlistadding/addtoplaylist.dart';
+import 'package:musicapp/provider/favoriteProvider.dart';
 import 'package:on_audio_query/on_audio_query.dart';
-import '../../database/favoritedb.dart';
+import 'package:provider/provider.dart';
 
 class PlayingControls extends StatefulWidget {
   const PlayingControls({
@@ -27,6 +28,7 @@ class _PlayingControlsState extends State<PlayingControls> {
   bool isPlaying = true;
   bool isShuffling = false;
   int currentIndex = 0;
+  // bool isfav=false
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -34,43 +36,43 @@ class _PlayingControlsState extends State<PlayingControls> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            ValueListenableBuilder(
-              valueListenable: FavoriteDb.favoriteSongs,
-              builder: (context, List<SongModel> favoritedata, child) {
+            Consumer<FavoriteProvider>(
+              // valueListenable: FavoriteDb.favoriteSongs,
+              builder: (context, Favourites, child) {
                 return IconButton(
                     onPressed: () {
-                      if (FavoriteDb.isFavor(widget.favSongModel)) {
-                        FavoriteDb.delete(widget.favSongModel.id);
+                      if (Favourites.isFavor(widget.favSongModel)) {
+                        Favourites.delete(widget.favSongModel.id);
                         const remove = SnackBar(
                           content: Text('Song removed from favorites'),
                           duration: Duration(seconds: 1),
                         );
                         ScaffoldMessenger.of(context).showSnackBar(remove);
                       } else {
-                        FavoriteDb.add(widget.favSongModel);
+                        Favourites.add(widget.favSongModel);
                         const addFav = SnackBar(
                           content: Text('Song added to favorites'),
                           duration: Duration(seconds: 1),
                         );
                         ScaffoldMessenger.of(context).showSnackBar(addFav);
                       }
-                      FavoriteDb.favoriteSongs.notifyListeners();
+                      Favourites.favoriteSongs;
                     },
-                    icon: FavoriteDb.isFavor(widget.favSongModel)
-                        ? const Icon(
-                            Icons.favorite,
-                            color: Colors.red,
-                          )
-                        : const Icon(
-                            Icons.favorite_outline,
-                            color: Colors.white,
-                          ));
+                    icon: Icon(
+  Favourites.isFavor(widget.favSongModel)
+    ? Icons.favorite
+    : Icons.favorite_outline,
+  color: Favourites.isFavor(widget.favSongModel)
+    ? Colors.red
+    : Colors.white,
+)
+                          
+                          );
               },
             ),
             IconButton(
                 onPressed: () {
-                                                            dialoguePlaylist(context,
-                                                widget.favSongModel);
+                  dialoguePlaylist(context, widget.favSongModel);
                 },
                 icon: const Icon(
                   Icons.playlist_add,
@@ -83,65 +85,60 @@ class _PlayingControlsState extends State<PlayingControls> {
             //shuffle
             IconButton(
               onPressed: () {
-               isShuffling == false
-                          ? Getallsong.audioplayer
-                              .setShuffleModeEnabled(true)
-                          : Getallsong.audioplayer
-                              .setShuffleModeEnabled(false);
+                isShuffling == false
+                    ? Getallsong.audioplayer.setShuffleModeEnabled(true)
+                    : Getallsong.audioplayer.setShuffleModeEnabled(false);
               },
               icon: StreamBuilder<bool>(
-                      stream:
-                          Getallsong.audioplayer.shuffleModeEnabledStream,
-                      builder: (BuildContext context, AsyncSnapshot snapshot) {
-                        if (snapshot.hasData) {
-                          isShuffling = snapshot.data;
-                        }
-                        if (isShuffling) {
-                          return const Icon(
-                            Icons.shuffle,
-                            size: 30,
-                            color: Colors.red,
-                          );
-                        } else {
-                          return const Icon(
-                            Icons.shuffle,
-                            color: Colors.white,
-                          );
-                        }
-                      },
-                    ),
-                  ),
+                stream: Getallsong.audioplayer.shuffleModeEnabledStream,
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  if (snapshot.hasData) {
+                    isShuffling = snapshot.data;
+                  }
+                  if (isShuffling) {
+                    return const Icon(
+                      Icons.shuffle,
+                      size: 30,
+                      color: Colors.red,
+                    );
+                  } else {
+                    return const Icon(
+                      Icons.shuffle,
+                      color: Colors.white,
+                    );
+                  }
+                },
+              ),
+            ),
 
-            
             //repeat
             IconButton(
               onPressed: () {
-               Getallsong.audioplayer.loopMode == LoopMode.one
-                          ? Getallsong.audioplayer.setLoopMode(LoopMode.all)
-                          : Getallsong.audioplayer
-                              .setLoopMode(LoopMode.one);
+                Getallsong.audioplayer.loopMode == LoopMode.one
+                    ? Getallsong.audioplayer.setLoopMode(LoopMode.all)
+                    : Getallsong.audioplayer.setLoopMode(LoopMode.one);
               },
               icon: StreamBuilder<LoopMode>(
-                      stream: Getallsong.audioplayer.loopModeStream,
-                      builder: (context, snapshot) {
-                        final loopMode = snapshot.data;
-                        if (LoopMode.one == loopMode) {
-                          return const Icon(
-                            Icons.repeat,
-                            size: 30,
-                            color: Colors.red,
-                          );
-                        } else {
-                          return const Icon(
-                            Icons.repeat,
-                            color: white,
-                          );
-                        }
-                      },
-                    ),
-                  ),
-                ],
+                stream: Getallsong.audioplayer.loopModeStream,
+                builder: (context, snapshot) {
+                  final loopMode = snapshot.data;
+                  if (LoopMode.one == loopMode) {
+                    return const Icon(
+                      Icons.repeat,
+                      size: 30,
+                      color: Colors.red,
+                    );
+                  } else {
+                    return const Icon(
+                      Icons.repeat,
+                      color: white,
+                    );
+                  }
+                },
               ),
+            ),
+          ],
+        ),
         const SizedBox(
           height: 40,
         ),
@@ -149,7 +146,7 @@ class _PlayingControlsState extends State<PlayingControls> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-    // skip previous
+            // skip previous
             widget.firstSong
                 ? Center(
                     child: Container(
@@ -191,13 +188,13 @@ class _PlayingControlsState extends State<PlayingControls> {
                       ),
                     ),
                   ),
-    // play pause
+            // play pause
             Center(
               child: Container(
                 height: 70,
                 width: 70,
                 decoration: BoxDecoration(
-                  color:Colors.white,
+                  color: Colors.white,
                   borderRadius: BorderRadius.circular(30),
                 ),
                 child: IconButton(
@@ -226,7 +223,7 @@ class _PlayingControlsState extends State<PlayingControls> {
                           )),
               ),
             ),
-    // skip next
+            // skip next
             widget.lastSong
                 ? Center(
                     child: Container(

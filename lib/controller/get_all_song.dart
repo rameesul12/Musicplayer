@@ -5,7 +5,8 @@ import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
-class Getallsong{ 
+class Getallsong { 
+
 static AudioPlayer audioplayer=AudioPlayer();
 static List<SongModel>songcopy=[];
 static List<SongModel>playingsong=[];

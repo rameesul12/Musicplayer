@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:musicapp/colorvariables/colors.dart';
+import 'package:musicapp/provider/playlistProvider.dart';
+import 'package:provider/provider.dart';
 import '../database/database.dart';
-import '../database/playlistDDB/playlistdb.dart';
 import 'gridviewplaylist.dart';
 
 class PlaylistPage extends StatefulWidget {
@@ -20,9 +21,9 @@ class _PlaylistPageState extends State<PlaylistPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: Hive.box<MusicWorld>('playlistDb').listenable(),
-      builder: (context, Box<MusicWorld> musicList, child) {
+    return Consumer<PlaylistProvider>(
+     // valueListenable: Hive.box<MusicWorld>('playlistDb').listenable(),
+      builder: (context,  musicList, child) {
         return Scaffold(
           backgroundColor:backgroundColor,
           resizeToAvoidBottomInset: false,
@@ -74,7 +75,7 @@ Navigator.pop(context);
                     ),
                   )
                 : PlaylistGridView(
-                    musicList: musicList,
+                    musicList: musicList.playlistDb,
                   ),
           ),
         );
@@ -156,6 +157,7 @@ Navigator.pop(context);
               onPressed: () {
                 if (formKey.currentState!.validate()) {
                   saveButtonPressed(context);
+                // Navigator.pop(context);
                 }
               },
               child: const Text(
@@ -177,7 +179,11 @@ Navigator.pop(context);
 Future<void> saveButtonPressed(context) async {
   final name = nameController.text.trim();
   final music = MusicWorld(name: name, songId: []);
-  final datas = PlaylistDb.playlistDb.values.map((e) => e.name.trim()).toList();
+  final datas =Provider.of<PlaylistProvider>(context, listen: false)
+      .playlistDb
+      .values
+      .map((e) => e.name.trim())
+      .toList();
   if (name.isEmpty) {
     return;
   } else if (datas.contains(music.name)) {
@@ -197,7 +203,8 @@ Future<void> saveButtonPressed(context) async {
     ScaffoldMessenger.of(context).showSnackBar(snackbar3);
     Navigator.of(context).pop();
   } else {
-    PlaylistDb.addPlaylist(music);
+    // PlaylistDb.addPlaylist(music);
+    Provider.of<PlaylistProvider>(context,listen: false).addPlaylist(music);
     final snackbar4 = SnackBar(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(25),

@@ -45,7 +45,7 @@ class _splashscreenState extends State<splashscreen> {
     navigatehome()async{
       await Future.delayed (const Duration(seconds: 3));
      // ignore: use_build_context_synchronously
-     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>const homepage(songModel: [],)));
+     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => homepage(songModel: [],)));
     
     }
   

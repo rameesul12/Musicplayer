@@ -145,7 +145,7 @@ class _NowPlayingState extends State<NowPlaying> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Center(
-// title
+    // title
                       child: TextScroll(
                         widget.songModel[currentIndex].displayNameWOExt,
                         style: const TextStyle(
@@ -160,8 +160,8 @@ class _NowPlayingState extends State<NowPlaying> {
                       height: 10,
                     ),
                     Center(
-// artist name
-
+    // artist name
+    
                       child: Text(
                         widget.songModel[currentIndex].artist.toString() ==
                                 '<unknown>'
@@ -176,7 +176,7 @@ class _NowPlayingState extends State<NowPlaying> {
                   ],
                 ),
               ),
-// slider
+    // slider
               Padding(
                 padding: const EdgeInsets.only(left: 8, right: 8, top: 8),
                 child: SliderTheme(

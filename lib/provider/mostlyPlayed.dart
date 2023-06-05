@@ -5,36 +5,37 @@ import 'package:on_audio_query/on_audio_query.dart';
 import '../widgets/home.dart';
 
 
-class MostlyPlayed extends ChangeNotifier {
-  static ValueNotifier<List<SongModel>> mostlyPlayedSongNotifier =
-      ValueNotifier([]);
+class MostlyPlayedProvider with ChangeNotifier {
+   List<SongModel> mostlyPlayedSong =  [];
   static List<dynamic> mostlyPlayed = [];
-    static List<dynamic> count = [];
+  //  static List<dynamic> count = [];
 
-  static Future<void> addmostlyPlayed(item) async {
+  Future<void> addmostlyPlayed(item) async {
     final mostlyplaydDb = await Hive.openBox('mostlyPlayedDb');
     await mostlyplaydDb.add(item); 
     getMostlyPlayed();
-    addcount(item);
+    //addcount(item);
+    notifyListeners();
   
   }
-static void addcount(value){  
-count.add(value);
+/* static void addcount(value){  
+//count.add(value);
 
-}
-  static Future<void> getMostlyPlayed() async {
+} */
+   Future<void> getMostlyPlayed() async {
     final mostlyPlayedDb = await Hive.openBox('mostlyPlayedDb');
     mostlyPlayed = mostlyPlayedDb.values.toList();
     
     displayMostlyPlayed();
-    mostlyPlayedSongNotifier.notifyListeners();
+    notifyListeners();
+   
   }
 
  
-static Future<List> displayMostlyPlayed()async {
-/*     final mostlyPlayedDb = await Hive.openBox('mostlyPlayedDb');
+ Future<List> displayMostlyPlayed()async {
+     final mostlyPlayedDb = await Hive.openBox('mostlyPlayedDb');
     final mostlyPlayedItems = mostlyPlayedDb.values.toList();
-    mostlyPlayedSongNotifier.value.clear();
+    mostlyPlayedSong.clear();
     int counts = 0;
     for (var i = 0; i < mostlyPlayedItems.length; i++) {
       for (var j = 0; j < startsong.length; j++) {
@@ -47,7 +48,7 @@ static Future<List> displayMostlyPlayed()async {
        
         for (var k = 0; k < startsong.length; k++) {
           if (mostlyPlayedItems[i] == startsong[k].id) {
-            mostlyPlayedSongNotifier.value.add(startsong[k]);
+            mostlyPlayedSong.add(startsong[k]);
             mostlyPlayed.add(startsong[k]);
           }
         }
@@ -55,11 +56,11 @@ static Future<List> displayMostlyPlayed()async {
       }
     }
     return mostlyPlayed;
-} */
+} 
 
-    final mostlyPlayedDb = await Hive.openBox('mostlyPlayedDb'); 
+   /*  final mostlyPlayedDb = await Hive.openBox('mostlyPlayedDb'); 
     var count=mostlyPlayedDb.values.toList();
-    mostlyPlayedSongNotifier.value.clear();
+    mostlyPlayedSong.value.clear();
     mostlyPlayed.clear();
     
 for (var i = 0; i < count.length-1; i++) {
@@ -83,10 +84,7 @@ for (var i = 0; i < count.length-1; i++) {
     
   }
   return mostlyPlayed;
-}
-mostlyplayedsamplelogic(item){
-
-}
+} */
 
 
   }

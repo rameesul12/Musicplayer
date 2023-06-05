@@ -1,47 +1,62 @@
 import 'package:flutter/material.dart';
 import 'package:musicapp/colorvariables/colors.dart';
+import 'package:musicapp/provider/favoriteProvider.dart';
 import 'package:on_audio_query/on_audio_query.dart';
-import '../database/favoritedb.dart';
+import 'package:provider/provider.dart';
 import 'listviewscreen.dart';
 
-class Favourites extends StatefulWidget {
+class Favourites extends StatelessWidget {
   const Favourites({super.key});
 
   @override
-  State<Favourites> createState() => _FavouritesState();
-}
-
-class _FavouritesState extends State<Favourites> {
-  @override
   Widget build(BuildContext context) {
     
-    return ValueListenableBuilder(
-      valueListenable: FavoriteDb.favoriteSongs,
-      builder: (context, List<SongModel> favoriteData, Widget? child) {
-        return Scaffold(
+    return Consumer<FavoriteProvider>(
+      builder:(context, value, child) {
+        
+      
+      return Scaffold(
+        backgroundColor: backgroundColor,
+        appBar: AppBar(
+          title:const Text('favorites'),
           backgroundColor: backgroundColor,
-          appBar: AppBar(
-            title:const Text('favorites'),
-            backgroundColor: backgroundColor,
-          ),
-          body: ValueListenableBuilder(
-            valueListenable: FavoriteDb.favoriteSongs,
-            builder: (ctx, List<SongModel> favoriteData, Widget? child) {
-              if (favoriteData.isEmpty) {
-                return const Center(
-                  child: Text('No Favorite Data',
-                      style: TextStyle(
-                          color: Colors.black, fontWeight: FontWeight.bold)),
-                );
-              } else {
-                final temp = favoriteData.reversed.toList();
-                favoriteData = temp.toSet().toList();
-                return ListViewScreen(songModel: favoriteData, isMostly: false,);
-              }
+          actions:[ Consumer<FavoriteProvider>(
+            builder: (context, value, child) {
+              return
+             IconButton(onPressed: (){
+              value.clearFunction();
+            }, icon:const Icon( Icons.clear));
             },
           ),
+          ]
+        ),
+        body: Consumer<FavoriteProvider>(
+         
+          builder: (ctx,  favoriteData,  child) {
+            if (favoriteData.favoriteSongs.isEmpty) {
+              return const Center(
+                child: Text('No Favorite Data',
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.bold)),
+              );
+            } else {
+              final  temp = favoriteData.favoriteSongs.reversed.toList();
+             List<SongModel> favoritedatas = temp.toSet().toList();
+              return ListViewScreen(songModel: favoritedatas, isMostly: false,);
+            }
+        
+          
+        },
+        
+
+
+
+        )
         );
-      },
-    );
+      }
+    
+    
+      );
+    
   }
 }
